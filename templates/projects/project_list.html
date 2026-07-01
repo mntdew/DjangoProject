@@ -1,0 +1,53 @@
+{% extends 'projects/base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <form method="GET" action="{% url 'project_list' %}">
+            <div class="row g-2">
+                <div class="col-md-6">
+                    <input type="text" name="q" class="form-control" placeholder="Поиск по названию и описанию..." value="{{ query|default:'' }}">
+                </div>
+                <div class="col-md-4">
+                    <select name="category" class="form-select">
+                        <option value="">Все категории</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat.id }}" {% if selected_category == cat.id %}selected{% endif %}>{{ cat.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Найти</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    {% for project in projects %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">{{ project.title }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">
+                    {% if project.category %}{{ project.category.name }}{% else %}Без категории{% endif %}
+                </h6>
+                <p class="card-text">{{ project.description|truncatewords:20 }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-warning">⭐ {{ project.average_rating }}/5</span>
+                    <a href="{% url 'project_detail' project.pk %}" class="btn btn-sm btn-outline-primary">Подробнее</a>
+                </div>
+            </div>
+            <div class="card-footer text-muted">
+                Автор: {{ project.author }}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">Проекты не найдены.</div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'projects/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">{{ project.title }}</h3>
+            </div>
+            <div class="card-body">
+                <p><strong>Автор(ы):</strong> {{ project.author }}</p>
+                <p><strong>Категория:</strong> {{ project.category.name }}</p>
+                <p><strong>Описание:</strong></p>
+                <p>{{ project.description }}</p>
+                {% if project.github_link %}
+                    <a href="{{ project.github_link }}" target="_blank" class="btn btn-dark mb-3">Ссылка на GitHub</a>
+                {% endif %}
+
+                <hr>
+
+                <h5>Рейтинг: <span class="text-warning">⭐ {{ project.average_rating }}/5</span></h5>
+
+                {% if not has_rated %}
+                    <form method="POST" class="mt-3">
+                        {% csrf_token %}
+                        <p>Оцените проект:</p>
+                        <div class="btn-group" role="group">
+                            {% for i in "12345" %}
+                                <input type="submit" name="rating" value="{{ i }}" class="btn btn-outline-warning">
+                            {% endfor %}
+                        </div>
+                    </form>
+                {% else %}
+                    <p class="text-success mt-2">Вы уже оценили этот проект.</p>
+                {% endif %}
+            </div>
+        </div>
+        <a href="{% url 'project_list' %}" class="btn btn-secondary mt-3">Назад к каталогу</a>
+    </div>
+</div>
+{% endblock %}
